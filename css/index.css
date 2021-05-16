@@ -1,0 +1,71 @@
+.page-info {
+    text-align: center;
+    margin: auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.showuser-sec {
+    border: solid black 1px;
+    width: 120px;
+    padding: 12px;
+    margin: auto;
+}
+
+.inputs-sec {
+    padding: 8px;
+    color: tomato;
+    font-size: 26px;
+    
+}
+
+#btnsubprof {
+    margin: 8px;
+    padding: 8px;
+    font-size: large;
+    background-color: thistle;
+    border-radius: 2px;
+}
+
+.profileBtns {
+    border: thistle 2px solid;
+    padding: 8px;
+    margin: 8px;
+    width: 200px;
+    border-radius: 4px;
+    background-color: thistle;
+}
+
+.yourdetails {
+    border: thistle 1px solid;
+    margin: auto;
+    width: 400px;
+    text-align: center;
+    padding: 24px;
+
+}
+
+#showreg {
+    margin: 50px;
+    padding: 8px;
+    text-align: center;
+    font-size: large;
+
+}
+
+
+.welcome-sec {
+    color: black
+}
+
+.flex-con {
+    display: flex;
+}
+
+.form-sec {
+    margin: 100px;
+}
+
+.thebunch {
+    display: flex;
+}
+
