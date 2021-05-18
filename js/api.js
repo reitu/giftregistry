@@ -2,9 +2,12 @@ export var users = [] //user accounts
 
 export var objX = {}
 
+export var guests = []
+
 export function init() {
     pullUsers()
 }
+
 
 export function addUser (thename = " ", theemail = " ", thetitle = " ", thedetails = " ", thedate = " ") {
     objX = {
@@ -79,11 +82,11 @@ export function fetchUserDetails(a) {
     a.uuid = getUniqueID() 
 }
 
+export const uuid = new URLSearchParams(location.search).get('uuid')
 
- export function getCurrentProfile() { //does it keep pulling it
+export function getCurrentProfile() { //does it keep pulling it
     const queryString = window.location.search
-    const urlParams = new URLSearchParams(queryString);
-    const product = urlParams.get('uuid')
+    const product = new URLSearchParams(queryString).get('uuid')
 
     let userInfo = users.filter(function (e) {
         return e.uuid === product; //returns an array
@@ -98,7 +101,8 @@ export function fetchUserDetails(a) {
 export function addItem(xName, xDes) {
     getCurrentProfile().giftreg.push({
         giftname: xName,
-        giftdescription: xDes  
+        giftdescription: xDes,  
+        assigned: false
     })
     pushUsers()
 }
@@ -110,5 +114,26 @@ export function dltItem (x) {
         });       
     getCurrentProfile().giftreg = myUpdatedReg
     pushUsers()
+
+}
+
+
+export function getItem (thekey) {
+    //getCurrentProfile().giftreg.forEach(element => {
+    thekey.assigned = true
+   // });
+    pushUsers()
+    console.log('hey',users)
+
+}
+
+
+
+export function ungetItem (thekey) {
+    //getCurrentProfile().giftreg.forEach(element => {
+    thekey.assigned = false
+   // });
+    pushUsers()
+    console.log('hey',users)
 
 }

@@ -1,11 +1,13 @@
-import {init, addUser, users, addItem, getCurrentProfile, dltItem} from './api.js'
+import {init, addUser, users, addItem, getCurrentProfile, dltItem, uuid} from './api.js'
 import {stringToHTML} from './helpersfile.js'
 
 window.onload = begin()
 
 
 function begin() {
-    init()        
+    init()
+    const registryURL = "registry.html?uuid=" + uuid
+    console.log(uuid)
 
     console.log('all users right now: ', users)
 
@@ -24,7 +26,7 @@ function begin() {
             </p>
             <p> ${getCurrentProfile().grdate}
             </p>
-
+            <div><a href="${registryURL}" target="_blank">${registryURL}</a></div>
             <button> Edit Profile </button>
         </div>
         `))
@@ -69,17 +71,28 @@ function renderGifts () {
     var showReg = document.getElementById("showreg")
     showReg.innerHTML = " "
     currentRegArr.forEach(element => {
-        console.log('im an element here: ')
-        
-        var el = stringToHTML(`
-            <div> 
-                <div> ${element.giftname} 
-                <button class="giftRemove">
-                    ❌
-                </button>
+        console.log('im an element here: ', element.assigned, element.giftname)
+        if (element.assigned) {
+            var el = stringToHTML(`
+                <div> 
+                    <div> ${element.giftname} 
+                    <button class="giftRemove" disabled = "">
+                        ✅ Allocated to Reitu Malane
+                    </button>
+                    </div>
                 </div>
-            </div>
-        `)
+            `)
+        } else {
+            var el = stringToHTML(`
+                <div> 
+                    <div> ${element.giftname} 
+                    <button class="giftRemove">
+                        ❌
+                    </button>
+                    </div>
+                </div>
+            `)
+        }
         
         showReg.appendChild(el)
         var btnRemove = el.querySelector(".giftRemove")
