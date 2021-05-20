@@ -102,7 +102,7 @@ export function addItem(xName, xDes) {
     getCurrentProfile().giftreg.push({
         giftname: xName,
         giftdescription: xDes,  
-        assigned: false
+        assigned: ''
     })
     pushUsers()
 }
@@ -118,11 +118,15 @@ export function dltItem (x) {
 }
 
 
-export function getItem (thekey) {
+export function getItem (thekey, name, email) {
     //getCurrentProfile().giftreg.forEach(element => {
-    thekey.assigned = true
+    thekey.assigned = {
+        responderName: name,
+       responderEmail: email
+    }
+   // thekey.tfg = 
    // });
-    pushUsers()
+   // pushUsers()
     console.log('hey',users)
 
 }
@@ -131,9 +135,14 @@ export function getItem (thekey) {
 
 export function ungetItem (thekey) {
     //getCurrentProfile().giftreg.forEach(element => {
-    thekey.assigned = false
+    thekey.assigned = ''
    // });
-    pushUsers()
+    //pushUsers()
     console.log('hey',users)
 
+}
+
+export function finishAdd() {
+    pushUsers()
+    console.log("look att the users", users)
 }
