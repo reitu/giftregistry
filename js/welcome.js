@@ -1,10 +1,9 @@
-import {init, addUser, users } from './api.js'
+import { getUsers } from './api.js' //removed init from this
 import {stringToHTML} from './helpersfile.js'
 
-window.onload = begin()
+window.onload = begin() 
 
-function begin() {
-    init()  
+function begin() {  
     var showProfile = document.getElementById("showuser-sec")
     showProfile.appendChild(stringToHTML(`
     <div> 
@@ -12,14 +11,16 @@ function begin() {
         </button>
     </div>
     `))
-    console.log(users)
-    users.forEach(element => {
+
+    
+
+    getUsers().forEach(element => { 
         console.log('im an element here: ')
         
         var el = stringToHTML(`
             <div> 
                 <button class="profileBtns">
-                    ${element.name} 👤
+                    ${element.name} 👤 
                 </button>
             </div>
         `)
@@ -40,5 +41,4 @@ var btnNewUser = document.getElementById("btnNewUser")
 btnNewUser.onclick = function () {
     location.href = "createprofile.html"
 }
-
 

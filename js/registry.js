@@ -1,113 +1,95 @@
-import {init, addUser, users, addItem, getCurrentProfile, dltItem, uuid, getItem, ungetItem, finishAdd} from './api.js'
+import {getCurrentProfile, finalizeGift} from './api.js' 
 import {stringToHTML} from './helpersfile.js'
 
-window.onload = start()
+window.onload = start() 
 
-
-function start() {
-    init()
-    console.log(uuid)
-
-    console.log('all users right now: ', users)
+function start() { 
+    
+    const queryString = window.location.search 
+    const userID = new URLSearchParams(queryString).get('uuid')
+    var userProfile = getCurrentProfile(userID)  
 
     var regList = document.getElementById("reg-list")
     regList.appendChild(stringToHTML(`
         <div class="yourdetails"> 
             <h2> Gift Registry Details
             </h2>
-            <p> Sent by: ${getCurrentProfile().name}
+            <p> Sent by: ${userProfile.name}
             </p>
-            <p> Contact: ${getCurrentProfile().email}
+            <p> Contact: ${userProfile.email}
             </p>
-            <p>  ${getCurrentProfile().grtitle}
+            <p>${userProfile.grtitle}</p>
+            <p>${userProfile.grdscrptn}</p>
+            <p>
+                ${userProfile.grdate}
             </p>
-            <p> ${getCurrentProfile().grdscrptn}
-            </p>
-            <p> ${getCurrentProfile().grdate}
-            </p>
-            
-        
         </div>
         `))
    showGifts()
 }
 
 
+var giftArr = []
 function showGifts () {
-    var currentRegArr = getCurrentProfile().giftreg
+
+    const queryString = window.location.search 
+    const userID = new URLSearchParams(queryString).get('uuid')
+    var userProfile = getCurrentProfile(userID) 
+
+    var currentRegArr = userProfile.giftreg
     var regList = document.getElementById("view-list")
     regList.innerHTML = " "
     currentRegArr.forEach(element => {
-        console.log('im an element here: ', element.giftname , element.assigned)
-        if (element.assigned) {
-            var el = stringToHTML(`
-                <div> 
-                    <div> 
-                    <label for="gift">  <s> ${element.giftname} </s></label>
-                    <input type="checkbox" class="gifts">
-                    </div>
-                    
-                </div>
-            `)
-        } else {
-            var el = stringToHTML(`
-                <div> 
-                    <div> 
-                    <label for="gift"> ${element.giftname} hey </label>
-                    <input type="checkbox" class="gifts">
-                    </div>
-                    
-                </div>
-            `)
-
-        }
-
-        regList.appendChild(el)
         
-        var thename = document.getElementById("res-name")
-        var theemail = document.getElementById("res-email")
+        if (element.assigned) return
+
+        var el = stringToHTML(`
+            <div> 
+                <div> 
+                <label for="gift"> ${element.giftname} </label>
+                <input type="checkbox" class="gifts">
+                </div>
+                
+            </div>
+        `)
+        regList.appendChild(el)
 
         var checkGift = el.querySelector(".gifts")
 
         checkGift.onchange = function () {
+
             if (checkGift.checked) {
-                console.log("hey")
-                getItem(element, thename.value, theemail.value)
+                giftArr.push(element)   
             } 
             if(!checkGift.checked) {
-                console.log("im going")
-                ungetItem(element)
+                var iPlace = giftArr.indexOf(element)
+                giftArr.splice(iPlace, 1)
             }
         }
-
-        // btnGet.onclick = function () {
-        //    // dltItem (element.giftname)
-        //    //element.assigned = true
-        //     console.log("i am pressing a button") 
-        //     getItem(element, thename.value, theemail.value)
-        //     showGifts()
-        // }   
-
-        // btnUndo.onclick = function () {
-        //     // dltItem (element.giftname)
-        //     //element.assigned = true
-        //      console.log("undid honey") 
-        //      ungetItem(element)
-        //      showGifts()
-
-        //      //getItem(element)
-        //      //showGifts()
-       
     });   
     
 }
 
 
+
 var btnFinish = document.getElementById("btnFinish")
 
-btnFinish.onclick = function () {
-    console.log('all DEM', users)
-    finishAdd()
+btnFinish.onclick = function() {
+    
+    const queryString = window.location.search 
+    const userID = new URLSearchParams(queryString).get('uuid')
+    
+    var thename = document.getElementById("res-name")
+    var theemail = document.getElementById("res-email")
+    
+    var result = finalizeGift(userID, giftArr, thename.value, theemail.value)
+    console.log('result', result) 
+
+    if (result) {
+        window.alert('✅ Awesome, you have selected your items!')
+    }   else { 
+        window.alert("you have to pick a gift and enter your details")
+    }
 }
 
 
@@ -116,20 +98,3 @@ btnFinish.onclick = function () {
 
 
 
-
-
-
-//  var btnGet = el.querySelector(".giftGet")
-
-//         var btnUndo = el.querySelector(".giftUndo")
-
-//         //var checkGift = el.querySelector(".gifts")
-
-
-  // btnGet.onclick = function () {
-        //    // dltItem (element.giftname)
-        //    //element.assigned = true
-        //     console.log("i am pressing a button") 
-        //     getItem(element, thename.value, theemail.value)
-        //     showGifts()
-        // }

@@ -1,4 +1,5 @@
-export var users = [] //user accounts
+var users = [] //user accounts //inaccessible outside API
+var giftArr = []
 
 export var objX = {}
 
@@ -9,35 +10,61 @@ export function init() {
 }
 
 
-export function addUser (thename = " ", theemail = " ", thetitle = " ", thedetails = " ", thedate = " ") {
-    objX = {
-        name: thename,
-        email: theemail,
-        grtitle: thetitle,
-        grdscrptn: thedetails,
-        grdate: thedate,
-        giftreg: []
-        //uuid: getUniqueID()
-    }
-    fetchUserDetails(objX)
-    users.push(objX)
-    console.log('this is the object right now: ', objX)
-    pushUsers()
+function sendCopy (value) {
+    return JSON.parse(JSON.stringify(value))
 }
 
-function pushUsers() { 
+
+export function addUser (thename, theemail, thetitle, thedetails, thedate) { 
+
+    if (!theemail || !thename) return false
+
+    var duplicate = false 
+    _getUsers().forEach(function (el) {
+            if (el.email === theemail) {
+                duplicate = true
+            }
+        });
+    
+    if (!duplicate) {
+        objX = {
+            name: thename,
+            email: theemail,
+            grtitle: thetitle,
+            grdscrptn: thedetails,
+            grdate: thedate,
+            giftreg: []
+        }
+        _fetchUserDetails(objX)
+        users.push(objX)
+        console.log('this is the object right now: ', objX)
+        _pushUsers()
+
+        return true
+    } 
+    
+
+}
+
+function _pushUsers() {  
     var myJSONstring = JSON.stringify(users)  
     window.localStorage.setItem('allUsers', myJSONstring)
 }
 
-function pullUsers() {
+function _getUsers () { //ALL PRIVATE MUST HAVE AN UNDERSCORE
     var storedStr = window.localStorage.allUsers
     if (storedStr) {
         users = JSON.parse(storedStr)
     }
     if (!storedStr) {
         users = []
-    }
+    }             
+    return users 
+}
+
+
+export function getUsers () { 
+    return sendCopy(_getUsers())    
 }
 
 
@@ -60,7 +87,7 @@ function uuidv4() {
 
 function getUniqueID () {
     var duplicate = false
-    let id = uuidv4()
+    let id = uuidv4() 
     users.forEach(element => {
         try {
             if (element.uuid === id) {
@@ -78,71 +105,98 @@ function getUniqueID () {
 } 
 
 
-export function fetchUserDetails(a) {
+export function _fetchUserDetails(a) {
     a.uuid = getUniqueID() 
 }
 
 export const uuid = new URLSearchParams(location.search).get('uuid')
 
-export function getCurrentProfile() { //does it keep pulling it
-    const queryString = window.location.search
-    const product = new URLSearchParams(queryString).get('uuid')
 
-    let userInfo = users.filter(function (e) {
-        return e.uuid === product; //returns an array
+export function getCurrentProfile(a) {
+
+    let userInfo = _getUsers().filter(function (e) {
+        return e.uuid === a; 
     });
     
     let currentProfile = userInfo[0]
 
-    return currentProfile
+    return sendCopy(currentProfile) 
 }
 
 
-export function addItem(xName, xDes) {
-    getCurrentProfile().giftreg.push({
-        giftname: xName,
-        giftdescription: xDes,  
-        assigned: ''
-    })
-    pushUsers()
+export function addItem(gift, description, userID) {
+    var user = _fetchUser(userID)
+    if (!gift) return false
+
+    var giftDuplicate = false
+
+    user.giftreg.forEach(function (el) {
+        if (el.giftname === gift) {
+            giftDuplicate = true
+        }
+    });
+
+    if (!giftDuplicate) {
+        user.giftreg.push({
+            giftname: gift,
+            giftdescription: description,  
+            assigned: ''
+        })
+        _pushUsers()
+        console.log("hey", _getUsers())
+        return true
+    }
 }
 
 
-export function dltItem (x) {
-    var myUpdatedReg =  getCurrentProfile().giftreg.filter(function(thegift) {
+export function dltItem (userID, x) {
+    var myUpdatedReg = _fetchUser(userID).giftreg.filter(function(thegift) {
             return !(thegift.giftname === x)
         });       
-    getCurrentProfile().giftreg = myUpdatedReg
-    pushUsers()
+        _fetchUser(userID).giftreg = myUpdatedReg 
+    _pushUsers()
 
 }
 
 
-export function getItem (thekey, name, email) {
-    //getCurrentProfile().giftreg.forEach(element => {
-    thekey.assigned = {
-        responderName: name,
-       responderEmail: email
-    }
-   // thekey.tfg = 
-   // });
-   // pushUsers()
-    console.log('hey',users)
+export function finalizeGift(userID, selectedGifts, name, email) {
 
+    console.log(selectedGifts)
+    if (!selectedGifts && (!name || !email)) return false
+
+    var user = _fetchUser(userID)
+    var userGifts = user.giftreg
+
+    userGifts.forEach(el => {
+        selectedGifts.forEach(element => {
+            if (el.giftname === element.giftname) {
+            
+                el.assigned = {
+                    name,
+                    email
+                }
+            } 
+        })        
+    })
+    _pushUsers()
+
+    return true
+    
+}
+
+
+function _fetchUser(userID) {
+    var user = null
+    _getUsers().forEach(element => {
+        if (element.uuid === userID)  {
+            user = element
+        } 
+    })
+    return user
+     
 }
 
 
 
-export function ungetItem (thekey) {
-    //getCurrentProfile().giftreg.forEach(element => {
-    thekey.assigned = ''
-   // });
-    //pushUsers()
-    console.log('hey',users)
 
-}
 
-export function finishAdd() {
-    pushUsers()
-    console.log("look att the users", users)
-}

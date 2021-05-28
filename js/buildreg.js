@@ -1,30 +1,28 @@
-import {init, addUser, users, addItem, getCurrentProfile, dltItem, uuid} from './api.js'
+import { addItem, getCurrentProfile, dltItem, uuid} from './api.js'
 import {stringToHTML} from './helpersfile.js'
 
 window.onload = begin()
 
-
 function begin() {
-    init()
     const registryURL = "registry.html?uuid=" + uuid
-    console.log(uuid)
-
-    console.log('all users right now: ', users)
+    const queryString = window.location.search  
+    const userID = new URLSearchParams(queryString).get('uuid')
+    var currentProfile = getCurrentProfile(userID)
 
     var infoProfile = document.getElementById("profile-info")
     infoProfile.appendChild(stringToHTML(`
         <div class="yourdetails"> 
             <h2> Your Gift Registry Details
             </h2>
-            <p> Your name: ${getCurrentProfile().name}
+            <p> Your name: ${currentProfile.name}
             </p>
-            <p> Your email: ${getCurrentProfile().email}
+            <p> Your email: ${currentProfile.email}
             </p>
-            <p>  ${getCurrentProfile().grtitle}
+            <p>  ${currentProfile.grtitle} 
             </p>
-            <p> ${getCurrentProfile().grdscrptn}
+            <p> ${currentProfile.grdscrptn}
             </p>
-            <p> ${getCurrentProfile().grdate}
+            <p> ${currentProfile.grdate}
             </p>
             <div><a href="${registryURL}" target="_blank">${registryURL}</a></div>
             <button> Edit Profile </button>
@@ -34,50 +32,50 @@ function begin() {
 }
 
 
-const giftForm = document.getElementById("listform") //FORM SECTION FOR GIFT
+const giftForm = document.getElementById("listform") 
 giftForm.onsubmit = newGift
 
 
 function newGift (e) {
+    const queryString = window.location.search 
+    const userID = new URLSearchParams(queryString).get('uuid')
+
+
     e.preventDefault()
 
     var giftname = document.getElementById("itemName")
     var giftdes = document.getElementById("itemDes")
-    
-    if (giftname.value) {
-        var hasGift = false
 
-        getCurrentProfile().giftreg.forEach(function (el) {
-          if (el.giftname === giftname.value) {
-            hasGift = true
-          }
-        });
-
-        if (!hasGift) {
-
-            addItem(giftname.value, giftdes.value)
-            renderGifts()
+        var result = addItem(giftname.value, giftdes.value, userID)  
+        if (result) {
+            renderGifts() 
+        
         } else {
-            window.alert("You've already entered that item.")
+            window.alert("Gift field empty or You've already entered that item.")
         }
-    }
     giftname.value = ''
     giftdes.value = ''
 }
 
 
 function renderGifts () {
-    var currentRegArr = getCurrentProfile().giftreg
+    
+    const queryString = window.location.search  
+    const userID = new URLSearchParams(queryString).get('uuid')
+    var currentProfile = getCurrentProfile(userID)
+
+    var currentRegArr = currentProfile.giftreg
     var showReg = document.getElementById("showreg")
     showReg.innerHTML = " "
-    currentRegArr.forEach(element => {
-        console.log('im an element here: ', element.assigned, element.giftname)
+    currentRegArr.forEach(element => { 
+        
         if (element.assigned) {
+            var responder = element.assigned
             var el = stringToHTML(`
                 <div> 
                     <div> ${element.giftname} 
                     <button class="giftRemove" disabled = "">
-                        ✅ Allocated to Reitu Malane
+                        ✅ Allocated to ${responder.name} 
                     </button>
                     </div>
                 </div>
@@ -98,8 +96,7 @@ function renderGifts () {
         var btnRemove = el.querySelector(".giftRemove")
 
         btnRemove.onclick = function () {
-            dltItem (element.giftname)
-            console.log("i am pressing a button") 
+            dltItem (userID, element.giftname) //DISPLAY OR SHOW; WE'RE NOT MODIFYING THE DATA 
             renderGifts()
         }   
     });   
