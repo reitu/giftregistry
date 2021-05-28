@@ -19,30 +19,31 @@ export function addUser (thename, theemail, thetitle, thedetails, thedate) {
 
     if (!theemail || !thename) return false
 
-    var duplicate = false 
-    _getUsers().forEach(function (el) {
-            if (el.email === theemail) {
-                duplicate = true
+    if (theemail) { 
+        var duplicate = false 
+        _getUsers().forEach(function (el) {
+                if (el.email === theemail) {
+                    duplicate = true
+                }
+            });
+        
+        if (!duplicate) {
+            objX = {
+                name: thename,
+                email: theemail,
+                grtitle: thetitle,
+                grdscrptn: thedetails,
+                grdate: thedate,
+                giftreg: []
             }
-        });
-    
-    if (!duplicate) {
-        objX = {
-            name: thename,
-            email: theemail,
-            grtitle: thetitle,
-            grdscrptn: thedetails,
-            grdate: thedate,
-            giftreg: []
-        }
-        _fetchUserDetails(objX)
-        users.push(objX)
-        console.log('this is the object right now: ', objX)
-        _pushUsers()
+            _fetchUserDetails(objX)
+            users.push(objX)
+            console.log('this is the object right now: ', objX)
+            _pushUsers()
 
-        return true
+            return true
+        } 
     } 
-    
 
 }
 
@@ -159,9 +160,15 @@ export function dltItem (userID, x) {
 }
 
 
+export function getIDofRecent() {
+    var iPos = _getUsers().length
+    var recentlyAdded = _getUsers()[iPos-1]
+    return recentlyAdded.uuid
+}
+
+
 export function finalizeGift(userID, selectedGifts, name, email) {
 
-    console.log(selectedGifts)
     if (!selectedGifts && (!name || !email)) return false
 
     var user = _fetchUser(userID)
@@ -180,8 +187,7 @@ export function finalizeGift(userID, selectedGifts, name, email) {
     })
     _pushUsers()
 
-    return true
-    
+    return true  
 }
 
 
@@ -192,8 +198,7 @@ function _fetchUser(userID) {
             user = element
         } 
     })
-    return user
-     
+    return user    
 }
 
 
