@@ -1,4 +1,4 @@
-import { getUsers } from './api.js' //removed init from this
+import { getUsers } from './api.js' 
 import {stringToHTML} from './helpersfile.js'
 
 window.onload = begin() 

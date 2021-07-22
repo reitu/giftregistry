@@ -1,4 +1,4 @@
-var users = [] //user accounts //inaccessible outside API
+var users = [] //user accounts
 var giftArr = []
 
 export var objX = {}
@@ -52,7 +52,7 @@ function _pushUsers() {
     window.localStorage.setItem('allUsers', myJSONstring)
 }
 
-function _getUsers () { //ALL PRIVATE MUST HAVE AN UNDERSCORE
+function _getUsers () { 
     var storedStr = window.localStorage.allUsers
     if (storedStr) {
         users = JSON.parse(storedStr)
@@ -166,10 +166,13 @@ export function getIDofRecent() {
     return recentlyAdded.uuid
 }
 
+function validateEmail(email) {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email)
+}
 
 export function finalizeGift(userID, selectedGifts, name, email) {
 
-    if (!selectedGifts && (!name || !email)) return false
+    if (!selectedGifts.length || !name || !validateEmail(email)) return false
 
     var user = _fetchUser(userID)
     var userGifts = user.giftreg

@@ -12,24 +12,32 @@
     <h1>
         Hello Guest, 
     </h1>
-    <h2>
-        Please fill in your details first, then select your choice. Then click finish.
-    </h2>
-    <div>
-        <input type="text" placeholder="Your Name" id="res-name"> </input>
-        <input type="email" placeholder="Your Email" id="res-email"></input>
-    </div>
-
+    <p>Someone you know sent you this gift registry to complete. Details below. Happy Gifting! 🎁</p>
     <div id="reg-list">
-
     </div>
-    <div id="view-list">
+    <h2 style="display: none;" id="emptyreg-msg">Currently no items in the gift registry. Check again later  🙂</h2>
+    <div class="selection-area">
+        <h2>
+            Please fill in your details, then select your choice. Then click finish.
+        </h2>
+        <div class="guest-info">
+            <input type="text" placeholder="Your Name" id="res-name"/>
+            <input
+                type=“email”
+                placeholder="Your Email"
+                id="res-email"
+                pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
+                required
+            />
+        </div>
 
-    </div>
+        <div id="view-list">
 
-    <div>
-        <button id="btnFinish">Finish</button>
+        </div>
+
+        <div>
+            <button id="btnFinish">Finish</button>
+        </div>
     </div>
-    
 </body>
 </html>

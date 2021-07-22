@@ -24,8 +24,9 @@ function begin() {
             </p>
             <p> ${currentProfile.grdate}
             </p>
+            <p style="padding-top: 40px"> Share your registry link below with friends and family after you've added your items. You can come back to this page to see who your gifts have been allocated to. </p>
             <div><a href="${registryURL}" target="_blank">${registryURL}</a></div>
-            <button> Edit Profile </button>
+            
         </div>
         `))
     renderGifts()
@@ -72,22 +73,26 @@ function renderGifts () {
         if (element.assigned) {
             var responder = element.assigned
             var el = stringToHTML(`
-                <div> 
-                    <div> ${element.giftname} 
+                <div class="item-listed"> 
+                    <div>
+                        <p>${element.giftname}</p>
+                        <p style="color: grey;">${element.giftdescription}</p>
+                    </div>
                     <button class="giftRemove" disabled = "">
                         ✅ Allocated to ${responder.name} 
                     </button>
-                    </div>
                 </div>
             `)
         } else {
             var el = stringToHTML(`
-                <div> 
-                    <div> ${element.giftname} 
-                    <button class="giftRemove">
-                        ❌
-                    </button>
+                <div class="item-listed"> 
+                    <div>
+                        <p>${element.giftname}</p>
+                        <p style="color: grey;">${element.giftdescription}</p>
                     </div>
+                    <button class="giftRemove">
+                        ❌ Remove
+                    </button>
                 </div>
             `)
         }
@@ -96,7 +101,7 @@ function renderGifts () {
         var btnRemove = el.querySelector(".giftRemove")
 
         btnRemove.onclick = function () {
-            dltItem (userID, element.giftname) //DISPLAY OR SHOW; WE'RE NOT MODIFYING THE DATA 
+            dltItem (userID, element.giftname) 
             renderGifts()
         }   
     });   

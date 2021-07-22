@@ -26,6 +26,17 @@ function start() {
         </div>
         `))
    showGifts()
+
+    var anyUnassigned = userProfile.giftreg.some(function(e) {
+        return !e.assigned
+    });
+
+    console.log('anyUnassigned? : ', anyUnassigned)
+
+    if (!anyUnassigned) {
+        document.querySelector(".selection-area").style.display = "none"
+        document.getElementById("emptyreg-msg").style.display = "block"
+    } 
 }
 
 
@@ -44,12 +55,13 @@ function showGifts () {
         if (element.assigned) return
 
         var el = stringToHTML(`
-            <div> 
-                <div> 
-                <label for="gift"> ${element.giftname} </label>
-                <input type="checkbox" class="gifts">
+            <div class="gift-listed"> 
+                <div>
+                    <label for="gift"> ${element.giftname} </label>
+                    <p style="color:grey">${element.giftdescription}</p>
                 </div>
                 
+                <input type="checkbox" class="gifts">
             </div>
         `)
         regList.appendChild(el)
@@ -81,14 +93,14 @@ btnFinish.onclick = function() {
     
     var thename = document.getElementById("res-name")
     var theemail = document.getElementById("res-email")
-    
+
     var result = finalizeGift(userID, giftArr, thename.value, theemail.value)
     console.log('result', result) 
 
     if (result) {
         window.alert('✅ Awesome, you have selected your items!')
     }   else { 
-        window.alert("you have to pick a gift and enter your details")
+        window.alert("You have to pick a gift and enter your details (email must include @ ).")
     }
 }
 
