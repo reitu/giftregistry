@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "giftregistry",
     "public": ".",
     "ignore": [
       "firebase.json",
